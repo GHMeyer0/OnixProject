@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  onixproject.api:
+    image: ${DOCKER_REGISTRY-}onixprojectapi
+    build:
+      context: .
+      dockerfile: src/Template.Api/Dockerfile
+
+  postgres:
+    image: postgres
+  redis:
+    image: redis
+  rabbitmq:
+    image: rabbitmq
