@@ -9,13 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Hellang.Middleware.ProblemDetails" Version="5.4.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.4" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\OnixProject.Application\OnixProject.Application.csproj" />
-    <ProjectReference Include="..\Template.Application\OnixProject.Application.csproj" />
   </ItemGroup>
 
 </Project>
