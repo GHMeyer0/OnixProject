@@ -1,5 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OnixProject.Application.Services.Interfaces;
+using OnixProject.Application.ViewModels;
+using OnixProject.Domain.Searches;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using X.PagedList;
 
 namespace OnixProject.Api.Controllers
 {
@@ -7,11 +12,16 @@ namespace OnixProject.Api.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        // GET: api/<UsersController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly IUserService userService;
+
+        public UsersController(IUserService userService)
         {
-            return new string[] { "value1", "value2" };
+            this.userService = userService;
+        }
+        [HttpGet]
+        public async Task<IPagedList<UserViewModel>> GetAsync([FromQuery] UserSearch search)
+        {
+            return await userService.GetAll(search);
         }
 
         // GET api/<UsersController>/5

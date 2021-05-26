@@ -5,11 +5,19 @@ services:
     image: ${DOCKER_REGISTRY-}onixprojectapi
     build:
       context: .
-      dockerfile: src/Template.Api/Dockerfile
+      dockerfile: src/OnixProject.Api/Dockerfile
+    networks:
+      - backend
 
   postgres:
     image: postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - backend
   redis:
     image: redis
   rabbitmq:
     image: rabbitmq
+networks:
+  backend:
