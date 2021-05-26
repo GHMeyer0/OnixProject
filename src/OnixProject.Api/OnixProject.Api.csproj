@@ -11,11 +11,11 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.6" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\OnixProject.Application\OnixProject.Application.csproj" />
-    <ProjectReference Include="..\Template.Application\OnixProject.Application.csproj" />
   </ItemGroup>
 
 </Project>

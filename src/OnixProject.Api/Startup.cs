@@ -1,10 +1,13 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Npgsql;
 using OnixProject.Application.Configurations;
+using OnixProject.Repository.Contexts;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -30,7 +33,8 @@ namespace OnixProject.Api
                     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
                 });
-            services.AddDependencyInjectionConfiguration();
+            services.AddRouting(options => options.LowercaseUrls = true);
+            services.AddDependencyInjectionConfiguration(Configuration);
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Template.Api", Version = "v1" });
@@ -40,6 +44,7 @@ namespace OnixProject.Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            UpdateDatabase(app);
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -57,6 +62,20 @@ namespace OnixProject.Api
             {
                 endpoints.MapControllers();
             });
+        }
+        private static void UpdateDatabase(IApplicationBuilder app)
+        {
+            using var serviceScope = app.ApplicationServices
+                .GetRequiredService<IServiceScopeFactory>()
+                .CreateScope();
+
+            using var context = serviceScope.ServiceProvider.GetService<OnixContext>();
+            context.Database.Migrate();
+
+            using var conn = (NpgsqlConnection)context.Database.GetDbConnection();
+            conn.Open();
+            conn.ReloadTypes();
+
         }
     }
 }

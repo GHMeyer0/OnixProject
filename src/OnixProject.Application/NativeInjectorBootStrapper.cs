@@ -8,6 +8,10 @@ namespace OnixProject.Application
     {
         public static IServiceCollection RegisterApplicationServices(this IServiceCollection services)
         {
+            services.AddAutoMapper((serviceProvider, automapper) =>
+            {
+            }, typeof(NativeInjectorBootStrapper).Assembly);
+
             services.AddScoped<IUserService, UserService>();
             return services;
         }
