@@ -21,6 +21,11 @@ namespace OnixProject.Repository.Repositories
             this.context = context;
         }
 
+        public Task<User> Create(User user)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task Delete(Guid id)
         {
             var user = await context.Users.FindAsync(id);

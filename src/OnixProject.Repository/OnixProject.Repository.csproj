@@ -6,6 +6,8 @@
 
   <ItemGroup>
     <PackageReference Include="AspNetCore.IQueryable.Extensions" Version="5.0.1" />
+    <PackageReference Include="EasyCaching.Redis" Version="1.2.1" />
+    <PackageReference Include="EFCoreSecondLevelCacheInterceptor" Version="3.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.6">
       <PrivateAssets>all</PrivateAssets>

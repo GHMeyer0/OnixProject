@@ -9,6 +9,7 @@ namespace OnixProject.Domain.Repositories
     public interface IUserRepository
     {
         Task<User> GetById(Guid id);
+        Task<User> Create(User user);
 
         Task Delete(Guid id);
 

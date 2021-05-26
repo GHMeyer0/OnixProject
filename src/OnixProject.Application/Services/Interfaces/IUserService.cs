@@ -1,4 +1,5 @@
-﻿using OnixProject.Application.ViewModels;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using OnixProject.Application.ViewModels;
 using OnixProject.Domain.Models;
 using OnixProject.Domain.Searches;
 using System;
@@ -14,7 +15,9 @@ namespace OnixProject.Application.Services.Interfaces
     {
         Task<IPagedList<UserViewModel>> GetAll(UserSearch search);
         Task<UserViewModel> GetById(Guid id);
-        Task<UserViewModel> Update(UserViewModel userView);
+        Task Update(UserViewModel userView);
+        Task PartialUpdate(Guid Id, JsonPatchDocument<UserViewModel> userView);
+
         Task<UserViewModel> Create(UserViewModel userView);
         Task Delete(Guid id);
     }

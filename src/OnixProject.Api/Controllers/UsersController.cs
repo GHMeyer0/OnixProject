@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
 using OnixProject.Application.Services.Interfaces;
 using OnixProject.Application.ViewModels;
 using OnixProject.Domain.Searches;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using X.PagedList;
@@ -19,16 +21,16 @@ namespace OnixProject.Api.Controllers
             this.userService = userService;
         }
         [HttpGet]
-        public async Task<IPagedList<UserViewModel>> GetAsync([FromQuery] UserSearch search)
+        public async Task<ActionResult<IPagedList<UserViewModel>>> GetAsync([FromQuery] UserSearch search)
         {
-            return await userService.GetAll(search);
+            return Ok(await userService.GetAll(search));
         }
 
         // GET api/<UsersController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("{id:guid}")]
+        public async Task<ActionResult<UserViewModel>> GetAsync(Guid id)
         {
-            return "value";
+            return Ok(await userService.GetById(id));
         }
 
         // POST api/<UsersController>
@@ -41,6 +43,12 @@ namespace OnixProject.Api.Controllers
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
+        }
+
+        [HttpPatch("{username}")]
+        public async Task<ActionResult> Patch(Guid id, [FromBody] JsonPatchDocument<UserViewModel> model)
+        {
+            return Ok();
         }
 
         // DELETE api/<UsersController>/5

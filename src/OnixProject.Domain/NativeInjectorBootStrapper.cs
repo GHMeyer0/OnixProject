@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace OnixProject.Domain
 {
@@ -6,7 +7,8 @@ namespace OnixProject.Domain
     {
         public static IServiceCollection RegisterDomainServices(this IServiceCollection services)
         {
-            // TODO: Implementar Command Handlers
+            services.AddMediatR(typeof(NativeInjectorBootStrapper));
+
             return services;
         }
     }
