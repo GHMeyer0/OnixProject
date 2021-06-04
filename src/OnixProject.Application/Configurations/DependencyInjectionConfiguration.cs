@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OnixProject.Domain;
 using OnixProject.Repository;
@@ -12,7 +13,10 @@ namespace OnixProject.Application.Configurations
             services.RegisterDomainServices();
             services.RegisterRepositoryServices(configuration);
             services.RegisterApplicationServices();
+            services.AddSignalRCore();
             return services;
         }
+
+
     }
 }

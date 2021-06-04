@@ -1,15 +1,15 @@
-﻿using OnixProject.Domain.Models;
+﻿using Arch.EntityFrameworkCore.UnitOfWork.Collections;
+using OnixProject.Domain.Models;
 using OnixProject.Domain.Searches;
 using System;
 using System.Threading.Tasks;
-using X.PagedList;
 
 namespace OnixProject.Domain.Repositories
 {
     public interface IUserRepository
     {
         Task<User> GetById(Guid id);
-        Task<User> Create(User user);
+        Task Create(User user);
 
         Task Delete(Guid id);
 

@@ -7,11 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Npgsql;
+using OnixProject.Api.DocumentFilters;
 using OnixProject.Application.Configurations;
 using OnixProject.Repository.Contexts;
-using System;
-using System.IO;
-using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -32,6 +30,11 @@ namespace OnixProject.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddRouting(options =>
+            {
+                options.LowercaseUrls = true;
+                options.LowercaseQueryStrings = true;
+            });
             services.AddControllers()
                 .AddJsonOptions(options =>
                 {
@@ -40,7 +43,6 @@ namespace OnixProject.Api
                     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
                 });
-            services.AddRouting(options => options.LowercaseUrls = true);
             services.AddProblemDetails(options => options.IncludeExceptionDetails = (context, exception) => environment.IsDevelopment());
             services.AddSwaggerGen(options =>
             {
@@ -59,13 +61,14 @@ namespace OnixProject.Api
                         Name = "MIT",
                     },
                 });
+                options.DocumentFilter<LowerCaseDocumentFilter>();
                 // Set the comments path for the Swagger JSON and UI.
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                options.IncludeXmlComments(xmlPath);
+                //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                //var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                //options.IncludeXmlComments(xmlPath);
             });
 
-            services.AddDependencyInjectionConfiguration();
+            services.AddDependencyInjectionConfiguration(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -76,6 +79,7 @@ namespace OnixProject.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseProblemDetails();
 
             app.UseHttpsRedirection();
 
@@ -84,7 +88,7 @@ namespace OnixProject.Api
             app.UseAuthorization();
 
             app.UseSwagger();
-            app.UseSwaggerUI(c => 
+            app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "OnixProject.Api v1");
                 c.OAuthClientId("swagger");
@@ -98,6 +102,7 @@ namespace OnixProject.Api
                 endpoints.MapControllers();
             });
         }
+
         private static void UpdateDatabase(IApplicationBuilder app)
         {
             using var serviceScope = app.ApplicationServices
@@ -110,7 +115,6 @@ namespace OnixProject.Api
             using var conn = (NpgsqlConnection)context.Database.GetDbConnection();
             conn.Open();
             conn.ReloadTypes();
-
         }
     }
 }

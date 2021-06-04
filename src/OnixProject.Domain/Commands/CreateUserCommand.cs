@@ -8,5 +8,9 @@ namespace OnixProject.Domain.Commands
 {
     public class CreateUserCommand : UserCommand
     {
+        public CreateUserCommand()
+        {
+            Id = Guid.NewGuid();
+        }
     }
 }

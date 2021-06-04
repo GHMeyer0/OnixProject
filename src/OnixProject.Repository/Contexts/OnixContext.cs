@@ -5,11 +5,12 @@ using OnixProject.Domain.Models;
 using OnixProject.Domain.Repositories;
 using OnixProject.Repository.Mappings;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OnixProject.Repository.Contexts
 {
-    public class OnixContext : DbContext, IUnitOfWork
+    public class OnixContext : DbContext
     {
         private readonly IMediator mediatorHandler;
 
@@ -31,13 +32,22 @@ namespace OnixProject.Repository.Contexts
             base.OnModelCreating(modelBuilder);
         }
 
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            var result = await base.SaveChangesAsync(cancellationToken);
+
+            var success = result > 0;
+            if (success) await mediatorHandler.PublishDomainEvents(this);
+            return result;
+        }
+
         public async Task<bool> CommitAsync()
         {
             // After executing this line all the changes (from the Command Handler and Domain Event Handlers)
             // performed through the DbContext will be committed
             var success = await SaveChangesAsync() > 0;
 
-            if (success) await mediatorHandler.PublishDomainEvents(this);
+            
 
             return success;
         }

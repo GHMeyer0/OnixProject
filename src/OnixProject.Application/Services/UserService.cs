@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Arch.EntityFrameworkCore.UnitOfWork.Collections;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using OnixProject.Application.Services.Interfaces;
@@ -8,7 +9,6 @@ using OnixProject.Domain.Repositories;
 using OnixProject.Domain.Searches;
 using System;
 using System.Threading.Tasks;
-using X.PagedList;
 
 namespace OnixProject.Application.Services
 {
@@ -25,11 +25,12 @@ namespace OnixProject.Application.Services
             this.mediator = mediator;
         }
 
-        public async Task<UserViewModel> Create(UserViewModel userView)
+        public async Task<UserViewModel> Create(CreateUserRequest userView)
         {
             var newUser = mapper.Map<CreateUserCommand>(userView);
             await mediator.Send(newUser);
-            return mapper.Map<UserViewModel>(userRepository.GetById(newUser.Id));
+            var userCreated = await userRepository.GetById(newUser.Id);
+            return mapper.Map<UserViewModel>(userCreated);
         }
 
         public Task Delete(Guid id)
@@ -37,10 +38,10 @@ namespace OnixProject.Application.Services
             throw new NotImplementedException();
         }
 
-        public async Task<IPagedList<UserViewModel>> GetAll(UserSearch search)
+        public async Task<PagedList<UserViewModel>> GetAll(UserSearch search)
         {
             var result = await userRepository.GetAll(search);
-            return mapper.Map<IPagedList<UserViewModel>>(result);
+            return mapper.Map<PagedList<UserViewModel>>(result);
         }
 
         public Task<UserViewModel> GetById(Guid id)

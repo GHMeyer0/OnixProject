@@ -15,9 +15,15 @@ services:
       POSTGRES_PASSWORD: postgres
     networks:
       - backend
+    ports:
+      - 5432:5432
   redis:
     image: redis
+    networks:
+      - backend
   rabbitmq:
     image: rabbitmq
+    networks:
+      - backend
 networks:
   backend:

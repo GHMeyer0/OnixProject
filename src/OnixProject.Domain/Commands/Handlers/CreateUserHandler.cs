@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Arch.EntityFrameworkCore.UnitOfWork;
+using AutoMapper;
 using FluentValidation.Results;
 using MediatR;
 using OnixProject.Domain.Commands;
@@ -27,9 +28,9 @@ namespace OnixProject.Domain.Handlers
 
         protected override async Task Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
-            var user = new User(request.Name, request.Email);
+            var user = new User(request.Id, request.Name, request.Email);
             await userRepository.Create(user);
-            await unitOfWork.CommitAsync();
+            await unitOfWork.SaveChangesAsync();
         }
     }
 }

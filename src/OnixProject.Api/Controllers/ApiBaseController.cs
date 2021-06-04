@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,10 @@ using System.Threading.Tasks;
 namespace OnixProject.Api.Controllers
 {
     [ApiController]
+    [Consumes("application/json")]
+    [Produces("application/json")]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public abstract class ApiBaseController : ControllerBase
     {
         private readonly ICollection<string> errors = new List<string>();
@@ -35,8 +40,7 @@ namespace OnixProject.Api.Controllers
 
         private ActionResult CustomBadRequest()
         {
-            new ValidationProblemDetails(_notifications.GetNotificationsByKey()
-            throw new NotImplementedException();
+            return BadRequest();
         }
 
         protected ActionResult<T> ResponseDelete<T>(T item)
@@ -100,7 +104,6 @@ namespace OnixProject.Api.Controllers
             foreach (var erro in erros)
             {
                 var erroMsg = erro.Exception == null ? erro.ErrorMessage : erro.Exception.Message;
-                NotifyError(string.Empty, erroMsg);
             }
         }
 
@@ -109,9 +112,5 @@ namespace OnixProject.Api.Controllers
             return BadRequest(new ValidationProblemDetails(ModelState));
         }
 
-        protected void NotifyError(string code, string message)
-        {
-            _mediator.Notify(new DomainNotification(code, message));
-        }
     }
 }

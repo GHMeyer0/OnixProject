@@ -1,4 +1,5 @@
-﻿using EFCoreSecondLevelCacheInterceptor;
+﻿using Arch.EntityFrameworkCore.UnitOfWork;
+using EFCoreSecondLevelCacheInterceptor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,9 +34,8 @@ namespace OnixProject.Repository
                     options.MigrationsAssembly(typeof(NativeInjectorBootStrapper).Assembly.ToString());
                 });
                 options.AddInterceptors(serviceProvider.GetRequiredService<SecondLevelCacheInterceptor>());
-        });
-            services.AddScoped<IUnitOfWork, OnixContext>();
-
+            });
+            services.AddUnitOfWork<OnixContext>();
 
             services.AddScoped<IUserRepository, UserRepository>();
 
